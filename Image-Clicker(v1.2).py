@@ -9,13 +9,42 @@ import win32gui
 import win32con
 import keyboard
 import os
+from pathlib import Path
 import logging
+
+# -------------------------
+# Configurable settings
+# Edit these values at the top of the file to change behavior
+# -------------------------
+# Directory (relative to this script) that contains template images
+IMAGE_DIR = Path(__file__).parent / "images"
+
+# Supported image extensions for templates
+SUPPORTED_EXTS = {'.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'}
+
+# Template matching threshold (0-1). Higher -> stricter match
+DEFAULT_THRESHOLD = 0.8
+
+# Delay between clicks (seconds)
+DEFAULT_CLICK_DELAY = 0.01
+
+# Killswitch key (single character/string recognized by `keyboard`)
+KILLSWITCH_KEY = 'q'
+
+# Logging config
+LOG_FILE = 'clicker.log'
+LOG_LEVEL = logging.INFO
+
+# Template matching method (cv2 constant)
+TEMPLATE_METHOD = cv2.TM_CCOEFF_NORMED
+
+# -------------------------
 
 # Global variable to indicate if the killswitch is activated
 killswitch_activated = False
 
 # Set up logging
-logging.basicConfig(filename='clicker.log', level=logging.INFO,
+logging.basicConfig(filename=LOG_FILE, level=LOG_LEVEL,
                     format='%(asctime)s - %(levelname)s: %(message)s')
 
 # Function to minimize the command prompt window (Windows-specific)
@@ -39,9 +68,9 @@ def monitor_killswitch(killswitch_key):
         time.sleep(0.1)
 
 # Function to search for images on the screen and click on them if found
-def search_and_click(images, threshold=0.8, click_delay=0.01, killswitch_key='q'):
+def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY, killswitch_key=KILLSWITCH_KEY):
     # Set the template matching method
-    method = cv2.TM_CCOEFF_NORMED
+    method = TEMPLATE_METHOD
 
     # Start monitoring the killswitch key in a separate thread
     killswitch_thread = threading.Thread(target=monitor_killswitch, args=(killswitch_key,))
@@ -63,6 +92,9 @@ def search_and_click(images, threshold=0.8, click_delay=0.01, killswitch_key='q'
 
             # Load the image from the database
             template = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            if template is None:
+                logging.error(f"Failed to load template image: {image_path}")
+                continue
 
             # Perform template matching
             result = cv2.matchTemplate(screen_gray, template, method)
@@ -98,12 +130,18 @@ def search_and_click(images, threshold=0.8, click_delay=0.01, killswitch_key='q'
 # Main function to execute the script
 def main():
     # List of image paths to search for on the screen
-    # Replace these with the paths to your actual images
-    image_paths = [
-        r"C:\path\to\image1.png",
-        r"C:\path\to\image2.png",
-        # Add more image paths as needed
-    ]
+    # Collect image templates from the configured images directory
+    image_paths = []
+    if IMAGE_DIR.exists() and IMAGE_DIR.is_dir():
+        for p in IMAGE_DIR.iterdir():
+            if p.suffix.lower() in SUPPORTED_EXTS:
+                image_paths.append(str(p))
+    else:
+        logging.error(f"Images directory not found: {IMAGE_DIR}")
+
+    if not image_paths:
+        logging.error("No image templates found in images/ — add .png/.jpg files to the images folder and re-run.")
+        return
 
     # Call the function with the list of image paths and optional parameters
     search_and_click(image_paths)
