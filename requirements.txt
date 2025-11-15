@@ -1,0 +1,15 @@
+# Requirements for Python-Image-Clicker (target: Python 3.10)
+# Minimal set inferred from `Image-Clicker(v1.2).py` imports.
+
+numpy>=1.22.0,<1.25
+opencv-python>=4.5.5
+pyautogui>=0.9.53
+pillow>=9.0.0
+pywin32>=303
+keyboard>=0.13.5
+
+# Notes:
+# - If you need GPU-accelerated image processing, install appropriate wheels for your platform
+#   (e.g., OpenCV builds) separately.
+# - `keyboard` typically requires running the script with Administrator privileges on Windows
+#   to capture global key presses. See RUNNING.md for details.
