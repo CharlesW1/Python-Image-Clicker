@@ -23,13 +23,13 @@ IMAGE_DIR = Path(__file__).parent / "images"
 SUPPORTED_EXTS = {'.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'}
 
 # Template matching threshold (0-1). Higher -> stricter match
-DEFAULT_THRESHOLD = 0.8
+DEFAULT_THRESHOLD = 0.85
 
 # Delay between clicks (seconds)
-DEFAULT_CLICK_DELAY = 0.01
+DEFAULT_CLICK_DELAY = 0.5
 
 # Killswitch key (single character/string recognized by `keyboard`)
-KILLSWITCH_KEY = 'q'
+KILLSWITCH_KEY = '['
 
 # Logging config
 LOG_FILE = 'clicker.log'
@@ -63,18 +63,15 @@ def monitor_killswitch(killswitch_key):
     while True:
         if keyboard.is_pressed(killswitch_key):
             logging.info("Killswitch activated.")
-            killswitch_activated = True
-            break
+            killswitch_activated = not killswitch_activated
+            print(f"Auto Accept toggled to {'ON' if not killswitch_activated else 'OFF'}.")
+            time.sleep(1.5)  # Prevent multiple toggles on a single press
         time.sleep(0.1)
 
 # Function to search for images on the screen and click on them if found
-def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY, killswitch_key=KILLSWITCH_KEY):
+def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY):
     # Set the template matching method
     method = TEMPLATE_METHOD
-
-    # Start monitoring the killswitch key in a separate thread
-    killswitch_thread = threading.Thread(target=monitor_killswitch, args=(killswitch_key,))
-    killswitch_thread.start()
 
     while not killswitch_activated:
         minimize_cmd_window()  # Minimize the command prompt window
@@ -125,8 +122,6 @@ def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CL
         if killswitch_activated:
             break
 
-    logging.info("Exiting the loop.")
-
 # Main function to execute the script
 def main():
     # List of image paths to search for on the screen
@@ -142,9 +137,14 @@ def main():
     if not image_paths:
         logging.error("No image templates found in images/ — add .png/.jpg files to the images folder and re-run.")
         return
+    
+    # Start monitoring the killswitch key in a separate thread
+    killswitch_thread = threading.Thread(target=monitor_killswitch, args=(KILLSWITCH_KEY,))
+    killswitch_thread.start()
 
     # Call the function with the list of image paths and optional parameters
-    search_and_click(image_paths)
+    while True:
+        search_and_click(image_paths)
 
 # Entry point of the script
 if __name__ == "__main__":
