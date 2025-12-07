@@ -1,0 +1,36 @@
+# Minimal .gitignore for Python-Image-Clicker
+# Only ignore things you likely produce locally and don't want committed
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Environment / secret files
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Keep images and Python source tracked
+!images/
+!images/**
+!*.py
+
+# If you use a different venv folder, add it above
