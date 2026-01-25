@@ -11,13 +11,23 @@ import keyboard
 import os
 from pathlib import Path
 import logging
+import sys
+import traceback
 
 # -------------------------
 # Configurable settings
 # Edit these values at the top of the file to change behavior
 # -------------------------
-# Directory (relative to this script) that contains template images
-IMAGE_DIR = Path(__file__).parent / "images"
+# Base directory for resources. When PyInstaller bundles the app with --onefile,
+# resources are extracted at runtime to sys._MEIPASS. Otherwise use the script dir.
+if getattr(sys, 'frozen', False):
+    # PyInstaller onefile/frozen case
+    base_dir = Path(sys._MEIPASS)
+else:
+    base_dir = Path(__file__).parent
+
+# Directory (relative to base_dir) that contains template images
+IMAGE_DIR = base_dir / "images"
 
 # Supported image extensions for templates
 SUPPORTED_EXTS = {'.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'}
@@ -28,11 +38,15 @@ DEFAULT_THRESHOLD = 0.85
 # Delay between clicks (seconds)
 DEFAULT_CLICK_DELAY = 0.5
 
+# Delay between successive screen checks to reduce CPU usage (seconds)
+DEFAULT_LOOP_DELAY = 0.1
+
 # Killswitch key (single character/string recognized by `keyboard`)
 KILLSWITCH_KEY = '['
 
 # Logging config
-LOG_FILE = 'clicker.log'
+# Write logs to the current working directory so the file is writable at runtime
+LOG_FILE = str(Path.cwd() / 'clicker.log')
 LOG_LEVEL = logging.INFO
 
 # Template matching method (cv2 constant)
@@ -58,22 +72,21 @@ def minimize_cmd_window():
         logging.error(f"Error minimizing command prompt window: {e}")
 
 # Function to monitor the killswitch key
-def monitor_killswitch(killswitch_key):
+def toggle_killswitch():
+    """Toggle the killswitch state and log/print status."""
     global killswitch_activated
-    while True:
-        if keyboard.is_pressed(killswitch_key):
-            logging.info("Killswitch activated.")
-            killswitch_activated = not killswitch_activated
-            print(f"Auto Accept toggled to {'ON' if not killswitch_activated else 'OFF'}.")
-            time.sleep(1.5)  # Prevent multiple toggles on a single press
-        time.sleep(0.1)
+    killswitch_activated = not killswitch_activated
+    logging.info("Killswitch toggled to %s", "ON" if not killswitch_activated else "OFF")
+    print(f"Auto Accept toggled to {'ON' if not killswitch_activated else 'OFF'}.")
 
 # Function to search for images on the screen and click on them if found
-def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY):
+def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY, loop_delay=DEFAULT_LOOP_DELAY):
     # Set the template matching method
     method = TEMPLATE_METHOD
 
     while not killswitch_activated:
+        # Sleep a short time between iterations to reduce CPU and input lag
+        time.sleep(loop_delay)
         minimize_cmd_window()  # Minimize the command prompt window
 
         # Capture the screen image
@@ -138,14 +151,52 @@ def main():
         logging.error("No image templates found in images/ — add .png/.jpg files to the images folder and re-run.")
         return
     
-    # Start monitoring the killswitch key in a separate thread
-    killswitch_thread = threading.Thread(target=monitor_killswitch, args=(KILLSWITCH_KEY,))
-    killswitch_thread.start()
+    # Register a hotkey to toggle killswitch (non-blocking). If registration fails,
+    # fall back to a polling thread so functionality remains.
+    try:
+        keyboard.add_hotkey(KILLSWITCH_KEY, toggle_killswitch)
+        logging.info("Registered hotkey for killswitch: %s", KILLSWITCH_KEY)
+    except Exception as e:
+        logging.warning("Could not register hotkey; falling back to polling: %s", e)
+        def fallback_monitor():
+            while True:
+                try:
+                    if keyboard.is_pressed(KILLSWITCH_KEY):
+                        toggle_killswitch()
+                        time.sleep(1.5)
+                except Exception:
+                    # keyboard may raise if not permitted; keep looping but don't crash
+                    pass
+                time.sleep(DEFAULT_LOOP_DELAY)
+
+        killswitch_thread = threading.Thread(target=fallback_monitor, daemon=True)
+        killswitch_thread.start()
 
     # Call the function with the list of image paths and optional parameters
     while True:
         search_and_click(image_paths)
 
-# Entry point of the script
+# Entry point of the script with error handling and an exit pause when appropriate
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        # Log and print traceback so users running the bundled exe can see the error
+        logging.exception("Unhandled exception in main")
+        traceback.print_exc()
+        try:
+            # On Windows, if the exe was double-clicked the stdin is typically not a TTY.
+            # Pause so the terminal window remains visible for the user to read the error.
+            if os.name == 'nt' and not sys.stdin.isatty():
+                input("An error occurred. Press Enter to exit...")
+        except Exception:
+            pass
+        # Re-raise to allow the process to exit with a non-zero code if desired
+        raise
+    else:
+        # Normal exit: if run by double-click (non-interactive), pause so the window doesn't close immediately
+        try:
+            if os.name == 'nt' and not sys.stdin.isatty():
+                input("Press Enter to exit...")
+        except Exception:
+            pass
