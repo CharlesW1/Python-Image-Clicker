@@ -12,12 +12,19 @@ venv/
 env/
 ENV/
 
+# Build artifacts
+dist/
+build/
+*.spec
+
 # Environment / secret files
 .env
 .env.*
 
 # Logs
+# Keep other logs ignored, but allow listing clicker.log specifically ignored since the app writes it
 *.log
+clicker.log
 logs/
 
 # OS files
