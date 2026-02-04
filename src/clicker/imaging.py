@@ -5,7 +5,7 @@ import numpy as np
 import pyautogui
 from .config import TEMPLATE_METHOD, DEFAULT_THRESHOLD, DEFAULT_CLICK_DELAY, DEFAULT_LOOP_DELAY
 from .logging import get_logger
-from .killswitch import killswitch_activated
+from . import killswitch
 from .window import minimize_cmd_window
 
 logger = get_logger(__name__)
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CLICK_DELAY, loop_delay=DEFAULT_LOOP_DELAY):
     method = TEMPLATE_METHOD
 
-    while not killswitch_activated:
+    while not killswitch.killswitch_activated:
         time.sleep(loop_delay)
         minimize_cmd_window()
 
@@ -42,11 +42,9 @@ def search_and_click(images, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT_CL
                     logger.info("Clicked on %s at (%d, %d)", image_path, x, y)
                     time.sleep(click_delay)
 
-                    if killswitch_activated:
+                    if killswitch.killswitch_activated:
                         break
-
-            if killswitch_activated:
+            if killswitch.killswitch_activated:
                 break
-
-        if killswitch_activated:
+        if killswitch.killswitch_activated:
             break
