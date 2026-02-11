@@ -41,7 +41,7 @@ REM Note: onefile extracts resources at runtime to a temp folder accessible via 
 pyinstaller --noconfirm --clean --onefile --name "Image-Clicker" ^
   --add-data "images;images" ^
   --add-data "clicker.log;." ^
-  "Image-Clicker(v1.2).py"
+  "image_clicker.py"
 
 IF %ERRORLEVEL% NEQ 0 (
   ECHO PyInstaller failed with exit code %ERRORLEVEL%.

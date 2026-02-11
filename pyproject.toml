@@ -1,0 +1,27 @@
+[project]
+name = "python-image-clicker"
+version = "1.2.0"
+description = "Automated Image Clicking"
+authors = [
+    {name = "2cz5"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.22.0,<1.25",
+    "opencv-python>=4.5.5",
+    "pyautogui>=0.9.53",
+    "pillow>=9.0.0",
+    "pywin32>=303; sys_platform == 'win32'",
+    "keyboard>=0.13.5"
+]
+
+[tool.semantic_release]
+version_variables = ["src/clicker/__init__.py:__version__"]
+version_toml = ["pyproject.toml:project.version"]
+
+[tool.semantic_release.branches.main]
+match = "main"
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true

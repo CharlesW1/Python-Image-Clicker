@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # run_image_clicker.sh
-# Portable launcher for Image-Clicker(v1.2).py on Windows from bash shells (Git Bash / WSL / MSYS2)
+# Portable launcher for image_clicker.py on Windows from bash shells (Git Bash / WSL / MSYS2)
 # Usage: ./run_image_clicker.sh [args...]
 
 # Compute script directory (the project root when this script lives next to the project files)
@@ -9,7 +9,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 # Paths relative to the script directory
-PY_SCRIPT_UNIX="$SCRIPT_DIR/Image-Clicker(v1.2).py"
+PY_SCRIPT_UNIX="$SCRIPT_DIR/image_clicker.py"
 PY_SCRIPT_WIN="$(printf '%s' "$PY_SCRIPT_UNIX" | sed -E 's#^/([a-zA-Z])/+#\1:/#;s#/#\\\\#g')"
 
 # Default to the unix-style path; convert to platform path when needed
