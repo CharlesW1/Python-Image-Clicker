@@ -39,7 +39,7 @@ Testing the build
 - Ensure `images/` templates are present in the extracted directory (for onedir builds the folder is present next to the exe).
 
 Follow-ups I can do for you
-- Update `image_clicker.py` to support PyInstaller `--onefile` (`sys._MEIPASS`) automatically.
+- Update `Image-Clicker(v1.2).py` to support PyInstaller `--onefile` (`sys._MEIPASS`) automatically.
 - Create an installer (NSIS or Inno Setup).
 - Add code signing instructions or automation.
 
