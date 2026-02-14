@@ -38,32 +38,18 @@ IF NOT EXIST "clicker.log" (
 
 REM Build: one-file (single exe). This bundles resources into a single executable.
 REM Note: onefile extracts resources at runtime to a temp folder accessible via sys._MEIPASS
-ECHO Building 1600 resolution version...
-pyinstaller --noconfirm --clean --onefile --name "Image-Clicker-1600" ^
-  --add-data "images/common;images" ^
-  --add-data "images/1600;images" ^
+ECHO Building auto-queue preset...
+pyinstaller --noconfirm --clean --onefile --name "Image-Clicker-auto-queue" ^
+  --add-data "images;images" ^
   --add-data "clicker.log;." ^
   "Image-Clicker(v1.2).py"
 
 IF %ERRORLEVEL% NEQ 0 (
-  ECHO PyInstaller failed (1600 build) with exit code %ERRORLEVEL%.
+  ECHO PyInstaller failed with exit code %ERRORLEVEL%.
   PAUSE
   EXIT /B %ERRORLEVEL%
 )
 
-ECHO Building 1900 resolution version...
-pyinstaller --noconfirm --clean --onefile --name "Image-Clicker-1900" ^
-  --add-data "images/common;images" ^
-  --add-data "images/1900;images" ^
-  --add-data "clicker.log;." ^
-  "Image-Clicker(v1.2).py"
-
-IF %ERRORLEVEL% NEQ 0 (
-  ECHO PyInstaller failed (1900 build) with exit code %ERRORLEVEL%.
-  PAUSE
-  EXIT /B %ERRORLEVEL%
-)
-
-ECHO Build complete. See the dist folder for Image-Clicker-1600.exe and Image-Clicker-1900.exe.
+ECHO Build complete. See the dist folder for Image-Clicker-auto-queue.exe.
 PAUSE
 
