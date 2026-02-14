@@ -1,5 +1,5 @@
 # Requirements for Python-Image-Clicker (target: Python 3.10)
-# Minimal set inferred from `Image-Clicker(v1.2).py` imports.
+# Minimal set inferred from Image-Clicker(v1.2).py imports.
 
 numpy>=1.22.0,<1.25
 opencv-python>=4.5.5
