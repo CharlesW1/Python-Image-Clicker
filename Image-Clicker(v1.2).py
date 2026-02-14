@@ -27,8 +27,9 @@ logger = get_logger(__name__)
 def main():
     image_paths = []
     if IMAGE_DIR.exists() and IMAGE_DIR.is_dir():
-        for p in IMAGE_DIR.iterdir():
-            if p.suffix.lower() in SUPPORTED_EXTS:
+        # rglob('*') finds images in all subfolders (common, 1600, 1900, etc.)
+        for p in IMAGE_DIR.rglob('*'):
+            if p.is_file() and p.suffix.lower() in SUPPORTED_EXTS:
                 image_paths.append(str(p))
     else:
         logger.error("Images directory not found: %s", IMAGE_DIR)
