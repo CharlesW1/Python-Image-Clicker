@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-image-clicker"
-version = "1.2.0"
+version = "1.0.0"
 description = "Automated Image Clicking"
 authors = [
     {name = "2cz5"}

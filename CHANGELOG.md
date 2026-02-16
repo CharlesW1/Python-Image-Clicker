@@ -1,6 +1,31 @@
 # CHANGELOG
 
 
+## v1.0.0 (2026-02-16)
+
+### Features
+
+- Reorganize images and set version to 1.2.0
+  ([`97a23c6`](https://github.com/CharlesW1/Python-Image-Clicker/commit/97a23c6c4651ce11ba11d46ac270b652eed1d053))
+
+- Set project version to 1.2.0 in pyproject.toml and src/clicker/__init__.py. - Reorganized images/
+  directory into common, 1600, and 1900 subdirectories. - Standardized image filenames to
+  snake_case. - Updated Image-Clicker(v1.2).py to recursively search for images. - Updated release
+  workflow and build script to build resolution-specific executables.
+
+Co-authored-by: CharlesW1 <8813880+CharlesW1@users.noreply.github.com>
+
+- Reorganize images by function and set version to 1.2.0
+  ([`4d0c811`](https://github.com/CharlesW1/Python-Image-Clicker/commit/4d0c811ea103ef9ed7896f31ba977f8286fb6c84))
+
+- Set project version to 1.2.0 in pyproject.toml and src/clicker/__init__.py. - Reorganized images/
+  directory by function (accept, find_match, play_again, misc) as requested in PR feedback. -
+  Updated Image-Clicker(v1.2).py to recursively search for images using rglob. - Updated release
+  workflow and build script to produce a single 'Image-Clicker-auto-queue' preset executable.
+
+Co-authored-by: CharlesW1 <8813880+CharlesW1@users.noreply.github.com>
+
+
 ## v0.1.0 (2026-02-14)
 
 ### Chores
