@@ -50,11 +50,11 @@ jobs:
           if (!(Test-Path "clicker.log")) {
             New-Item -ItemType File -Path "clicker.log" -Force
           }
-          pyinstaller --noconfirm --clean --onefile --name "Image-Clicker" --add-data "images;images" --add-data "clicker.log;." "Image-Clicker(v1.2).py"
+          pyinstaller --noconfirm --clean --onefile --name "Image-Clicker-auto-queue" --add-data "images;images" --add-data "clicker.log;." "Image-Clicker(v1.2).py"
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.release.outputs.tag }}
-          files: dist/Image-Clicker.exe
+          files: dist/Image-Clicker-auto-queue.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

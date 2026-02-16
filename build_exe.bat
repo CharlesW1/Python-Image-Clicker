@@ -38,7 +38,8 @@ IF NOT EXIST "clicker.log" (
 
 REM Build: one-file (single exe). This bundles resources into a single executable.
 REM Note: onefile extracts resources at runtime to a temp folder accessible via sys._MEIPASS
-pyinstaller --noconfirm --clean --onefile --name "Image-Clicker" ^
+ECHO Building auto-queue preset...
+pyinstaller --noconfirm --clean --onefile --name "Image-Clicker-auto-queue" ^
   --add-data "images;images" ^
   --add-data "clicker.log;." ^
   "Image-Clicker(v1.2).py"
@@ -49,6 +50,6 @@ IF %ERRORLEVEL% NEQ 0 (
   EXIT /B %ERRORLEVEL%
 )
 
-ECHO Build complete. See the dist\Image-Clicker folder.
+ECHO Build complete. See the dist folder for Image-Clicker-auto-queue.exe.
 PAUSE
 
