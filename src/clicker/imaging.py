@@ -6,7 +6,6 @@ import pyautogui
 from .config import TEMPLATE_METHOD, DEFAULT_THRESHOLD, DEFAULT_CLICK_DELAY, DEFAULT_LOOP_DELAY
 from .logging import get_logger
 from . import killswitch
-from .window import minimize_cmd_window
 
 logger = get_logger(__name__)
 
@@ -18,8 +17,8 @@ def search_and_click(templates, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT
     """
     method = TEMPLATE_METHOD
 
-    # Minimize once at the start of the loop
-    minimize_cmd_window()
+    # Move mouse up to get it out of the way
+    pyautogui.moveRel(0, -200)
 
     while not killswitch.killswitch_activated:
         time.sleep(loop_delay)
@@ -37,8 +36,8 @@ def search_and_click(templates, threshold=DEFAULT_THRESHOLD, click_delay=DEFAULT
                     x, y = pt[0] + template.shape[1] // 2, pt[1] + template.shape[0] // 2
                     pyautogui.click(x, y)
                     logger.info("Clicked on %s at (%d, %d)", image_path, x, y)
-                    # Re-minimize in case the click brought some window to front or if it was restored
-                    minimize_cmd_window()
+                    # Move mouse up to get it out of the way
+                    pyautogui.moveRel(0, -200)
                     time.sleep(click_delay)
 
                     if killswitch.killswitch_activated:
