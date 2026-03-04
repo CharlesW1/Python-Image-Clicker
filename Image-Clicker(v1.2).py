@@ -2,10 +2,8 @@
 
 import os
 import sys
+import time
 import traceback
-from pathlib import Path
-
-import sys
 from pathlib import Path
 
 # Ensure src is on sys.path so we can import the clicker package during development
@@ -16,6 +14,7 @@ if str(SRC) not in sys.path:
 
 from clicker.config import IMAGE_DIR, SUPPORTED_EXTS
 from clicker.logging import setup_logging, get_logger
+from clicker import killswitch
 from clicker.killswitch import register_hotkey_with_fallback
 from clicker.imaging import search_and_click
 
@@ -25,23 +24,32 @@ logger = get_logger(__name__)
 
 
 def main():
-    image_paths = []
+    templates = []
     if IMAGE_DIR.exists() and IMAGE_DIR.is_dir():
         # rglob('*') finds images in all subfolders (common, 1600, 1900, etc.)
+        import cv2
         for p in IMAGE_DIR.rglob('*'):
             if p.is_file() and p.suffix.lower() in SUPPORTED_EXTS:
-                image_paths.append(str(p))
+                path_str = str(p)
+                template = cv2.imread(path_str, cv2.IMREAD_GRAYSCALE)
+                if template is not None:
+                    templates.append((template, path_str))
+                else:
+                    logger.error("Failed to load template image: %s", path_str)
     else:
         logger.error("Images directory not found: %s", IMAGE_DIR)
         return
 
-    if not image_paths:
+    if not templates:
         logger.error("No image templates found in images/ — add .png/.jpg files to the images folder and re-run.")
         return
 
     register_hotkey_with_fallback()
     while True:
-        search_and_click(image_paths)
+        if killswitch.killswitch_activated:
+            time.sleep(0.5)
+            continue
+        search_and_click(templates)
 
 
 if __name__ == "__main__":
