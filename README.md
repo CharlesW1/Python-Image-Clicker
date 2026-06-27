@@ -1,51 +1,56 @@
-# Automated Image Clicking
+# LoL Auto-Accepter
+
+A simple Windows tool that watches your screen during League of Legends queue and lobby screens, automatically clicks **Accept** when a match is found, and re-queues for another game. It works purely by looking at and clicking on your screen — it never reads or modifies any game files.
 
 ## Showcase|Example:
 
 https://github.com/2cz5/Python-Image-Clicker/assets/169117434/c915386e-9d5f-44ef-9988-90ca2efb501b
 
-
-
-## Overview
-This Python script is designed to automate the process of searching for specific images on the screen and clicking on them when found. It utilizes computer vision techniques to locate images and the `pyautogui` library for simulating mouse clicks.
-
-## Features
-- **Image Recognition**: Uses template matching to locate images on the screen.
-- **Killswitch**: Implements a killswitch functionality to stop the script execution.
-- **Logging**: Logs events and errors to a file for debugging and monitoring.
-- **Customizable**: Allows customization of parameters such as threshold, click delay, and killswitch key.
+## What it automates
+- **Accept** — clicks the ready-check Accept button so you never miss a queue pop.
+- **Find Match** — re-queues for another game once you're back at the client home screen.
+- **Post-game** (full build only) — also clicks Play Again / Continue / Skip Waiting for Stats, so you don't have to babysit the post-game screens either.
 
 ## Prebuilt Executables
-Each [release](https://github.com/CharlesW1/Python-Image-Clicker/releases) publishes two standalone Windows executables — no Python install required:
-- **`Image-Clicker-auto-queue.exe`** — the full game loop: Find Match, Accept, and the post-game buttons (Play Again, Continue, Skip Stats).
-- **`Image-Clicker-auto-accept.exe`** — accept-only: just auto-clicks the ready-check Accept button, nothing else (no Find Match, no post-game buttons).
+Each [release](https://github.com/CharlesW1/lol-auto-accepter/releases) publishes two standalone Windows executables — no Python install required:
+- **`Image-Clicker-auto-accept.exe`** — accept-only: just clicks the ready-check Accept button, nothing else (no re-queue, no post-game).
+- **`Image-Clicker-auto-queue.exe`** — the full loop: Accept, Find Match (re-queue), and the post-game buttons.
 
 Download whichever one matches what you want automated and run it directly.
 
+## Features
+- **Image Recognition**: Uses OpenCV template matching to locate buttons on the screen.
+- **Killswitch**: A global hotkey to pause/resume the script without closing it.
+- **Logging**: Logs events and errors to `clicker.log` for debugging and monitoring.
+- **Customizable**: Match threshold, click delay, and the killswitch key are all configurable.
+
 ## Requirements
-- Python 3.x
-- OpenCV (`cv2`)
+- Python 3.10+
+- OpenCV (`opencv-python`)
 - NumPy
 - PyAutoGUI
-- win32gui
+- pywin32
 - keyboard
 
-## Installation
-1. Clone or download the repository.
-2. Install the required libraries using pip:
+## Running from source
+See [RUNNING.md](RUNNING.md) for full setup steps. In short:
 
-pip install opencv-python numpy pyautogui pypiwin32 keyboard
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python "Image-Clicker(v1.2).py"
+```
 
-## Usage
-1. Modify the `image_paths` list in the script to include the paths of the images you want to search for.
-2. Optionally adjust parameters such as threshold, click delay, and killswitch key according to your requirements.
-3. Run the script: python Image-Clicker(v1.2).py
-4. Press the killswitch key (default: 'q') to stop the script execution.
+## Building the executables
+See [BUILD.md](BUILD.md), or just run `build_exe.bat`, which builds both the full `auto-queue` and the `auto-accept`-only executables.
 
 ## Configuration
-- `threshold`: Adjusts the sensitivity of image recognition. Higher values result in stricter matching.
-- `click_delay`: Specifies the delay (in seconds) between consecutive clicks.
-- `killswitch_key`: Defines the key to activate the killswitch and terminate the script.
+Defaults live in `src/clicker/config.py`:
+- `DEFAULT_THRESHOLD` (0.85) — template-matching sensitivity; higher is stricter.
+- `DEFAULT_CLICK_DELAY` — delay in seconds between consecutive clicks.
+- `DEFAULT_LOOP_DELAY` — delay between screen checks, to keep CPU usage low.
+- `KILLSWITCH_KEY` (`[`) — the hotkey that pauses/resumes the script.
 
 ### Contributing:
 Contributions are welcome! Feel free to open an issue or submit a pull request.

@@ -1,4 +1,4 @@
-# Minimal .gitignore for Python-Image-Clicker
+# Minimal .gitignore for lol-auto-accepter
 # Only ignore things you likely produce locally and don't want committed
 
 # Python bytecode
@@ -16,6 +16,7 @@ ENV/
 dist/
 build/
 *.spec
+images_accept_only/
 
 # Environment / secret files
 .env

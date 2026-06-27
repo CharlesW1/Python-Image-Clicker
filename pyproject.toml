@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "python-image-clicker"
+name = "lol-auto-accepter"
 version = "1.1.0"
-description = "Automated Image Clicking"
+description = "Auto-accepts League of Legends ready checks and re-queues for another match"
 authors = [
     {name = "2cz5"}
 ]

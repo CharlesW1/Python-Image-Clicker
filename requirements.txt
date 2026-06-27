@@ -1,4 +1,4 @@
-# Requirements for Python-Image-Clicker (target: Python 3.10)
+# Requirements for lol-auto-accepter (target: Python 3.10)
 # Minimal set inferred from Image-Clicker(v1.2).py imports.
 
 numpy>=1.22.0,<1.25

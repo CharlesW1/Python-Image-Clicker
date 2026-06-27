@@ -1,4 +1,4 @@
-Python-Image-Clicker — Quick start (Windows PowerShell, Python 3.10)
+lol-auto-accepter — Quick start (Windows PowerShell, Python 3.10)
 
 1) Create and activate a virtual environment
 

@@ -1,4 +1,4 @@
-# Building a Windows executable for Python-Image-Clicker
+# Building a Windows executable for lol-auto-accepter
 
 This project can be packaged into a Windows executable using PyInstaller.
 
