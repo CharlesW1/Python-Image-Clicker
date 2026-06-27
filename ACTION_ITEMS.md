@@ -18,6 +18,15 @@ screenshot to be a real dropdown with options `1024x576`, `1280x720`,
 - `images/play_again/1920x1080_default.png` — left chevron point is sliced
   off. Secondary to the bigger issue below.
 
+## Shipped fix
+
+- Added `play_again/1920x1080_mayhem.png` and
+  `misc/continue_1920x1080_mayhem.png`, fixing the auto-clicker silently
+  failing to click "Play Again"/"Continue" during ARAM Mayhem matches
+  (root cause: those two screens use Mayhem-specific button art that
+  didn't match the default-skin templates, confirmed via live pixel
+  testing — not a resolution or staleness issue).
+
 ## Known art mismatch (not a crop issue)
 
 - `images/play_again/1920x1080_default.png` scores only ~0.24 against the
