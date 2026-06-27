@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v1.0.1 (2026-06-27)
+
+### Bug Fixes
+
+- Auto-clicker missing Play Again/Continue during ARAM Mayhem matches
+  ([`4aacd84`](https://github.com/CharlesW1/Python-Image-Clicker/commit/4aacd84f65333ea47e95d1083aa7921973d97b70))
+
+The default-skin play_again and continue templates didn't match the ARAM Mayhem event UI, so the
+  script silently failed to click those buttons. Captured fresh templates from a live Mayhem match
+  (already added in the previous commit); this documents it in ACTION_ITEMS.md and triggers a
+  release build for the fix.
+
+
 ## v1.0.0 (2026-02-16)
 
 ### Features
